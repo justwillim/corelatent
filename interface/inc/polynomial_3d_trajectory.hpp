@@ -129,7 +129,6 @@ public:
         return 3;
     }
 
-
 private:
     Eigen::MatrixXd coefficients_;
 };
