@@ -1,5 +1,7 @@
 #include <Eigen/Eigen>
 
+//! @todo split into separate files for each class
+//! @todo split definition and declaration
 // Base class for trajectory, for runtime polymorphism usage requirements
 class TrajectoryBase
 {
