@@ -1,5 +1,4 @@
 #include <rclcpp/rclcpp.hpp>
-
 #include "interface/msg/polynomial.hpp"
 
 using namespace std::chrono_literals;
