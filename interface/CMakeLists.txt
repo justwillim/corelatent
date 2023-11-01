@@ -7,9 +7,25 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Polynomial.msg"
+ )
+
+add_executable(polynomial_talker test/polynomial_msg_demo.cpp)
+ament_target_dependencies(polynomial_talker rclcpp)
+rosidl_target_interfaces(polynomial_talker ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+install(TARGETS
+  polynomial_talker
+  DESTINATION lib/${PROJECT_NAME})
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
