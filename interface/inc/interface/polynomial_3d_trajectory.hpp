@@ -64,23 +64,23 @@ public:
     }
 };
 
-template <>
 class Polynomial3dTrajectory : public Trajectory<Polynomial3dTrajectory>
 {
 public:
-    Polynomial3dTrajectory(int order, Eigen::MatrixXd coefficients)
+    Polynomial3dTrajectory(Eigen::MatrixXd coefficients)
     {
-        order_ = order;
+        assert(coefficients.rows() == 3);
+        order_ = coefficients.cols() - 1;
         coefficients_ = coefficients;
     }
     Eigen::VectorXd sample(double t)
     {
         Eigen::VectorXd sample = Eigen::VectorXd::Zero(3);
+        double t_powers = 1;
         for (int i = 0; i < order_ + 1; i++)
         {
-            sample(0) += coefficients_(i, 0) * pow(t, i);
-            sample(1) += coefficients_(i, 1) * pow(t, i);
-            sample(2) += coefficients_(i, 2) * pow(t, i);
+            sample += coefficients_.col(i) * t_powers;
+            t_powers *= t;
         }
         return sample;
     }
@@ -104,24 +104,27 @@ public:
     double curvature(double t)
     {
         // curvature = |v x a| / |v|^3
-        Eigen::MatrixXd sample = sample(t, 2);
-        Eigen::Vector3d velocity = sample.col(1);
-        Eigen::Vector3d acceleration = sample.col(2);
-        double curvature = (velocity.cross(acceleration)).norm() / pow(velocity.norm(), 3);
+        Eigen::MatrixXd sample_data = sample(t, 2);
+        Eigen::VectorXd velocity = sample_data.col(1);
+        Eigen::VectorXd acceleration = sample_data.col(2);
+        // THIS_METHOD_IS_ONLY_FOR_VECTORS_OF_A_SPECIFIC_SIZE, we cannot use cross
+        // double curvature = (velocity.cross(acceleration)).norm() / pow(velocity.norm(), 3);
+        double curvature = sqrt(pow(velocity(1) * acceleration(2) - velocity(2) * acceleration(1), 2) +
+                                pow(velocity(2) * acceleration(0) - velocity(0) * acceleration(2), 2) +
+                                pow(velocity(0) * acceleration(1) - velocity(1) * acceleration(0), 2)) /
+                            pow(velocity.norm(), 3);
         return curvature;
     }
     double arc_length(double t0, double t1)
     {
         static constexpr double dt = 0.001; // accuracy of numerical integration
         // arc length = integral of |v| dt
-        Eigen::MatrixXd sample = sample(t0, 1);
-        Eigen::Vector3d velocity = sample.col(1);
         // do numerical integration
         double arc_length = 0;
         for (double t = t0; t < t1; t += dt)
         {
-            Eigen::MatrixXd sample = sample(t, 1);
-            Eigen::Vector3d velocity = sample.col(1);
+            Eigen::MatrixXd sample_data = sample(t, 1);
+            Eigen::VectorXd velocity = sample_data.col(1);
             arc_length += velocity.norm() * dt;
         }
         return arc_length;
@@ -131,6 +134,13 @@ public:
         return 3;
     }
 
+public:
+    int order() const
+    {
+        return order_;
+    }
+
 private:
+    int order_;
     Eigen::MatrixXd coefficients_;
 };

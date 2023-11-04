@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/install/interface/include/interface",
+                "${workspaceFolder}/install/interface/include/interface/**",
                 "/opt/ros/humble/include/**",
                 "/usr/include/eigen3/**"
             ],

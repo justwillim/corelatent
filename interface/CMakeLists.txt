@@ -31,6 +31,13 @@ install(TARGETS
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(polynomial_3d_trajectory_test test/polynomial_3d_trajectory_test.cpp)
+  target_include_directories(polynomial_3d_trajectory_test PUBLIC
+    ${EIGEN3_INCLUDE_DIR}
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+    $<INSTALL_INTERFACE:include>
+  )
   # the following line skips the linter which checks for copyrights
   # comment the line when a copyright and license is added to all source files
   set(ament_cmake_copyright_FOUND TRUE)
@@ -40,5 +47,13 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+# Exporting headers
+install(
+  DIRECTORY inc/
+  DESTINATION include/${PROJECT_NAME}
+)
+
+ament_export_include_directories(inc)
 
 ament_package()
