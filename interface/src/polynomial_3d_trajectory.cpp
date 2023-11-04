@@ -1,15 +1,16 @@
 #include "interface/polynomial_3d_trajectory.hpp"
+#include <vector>
 
 Polynomial3dTrajectory::Polynomial3dTrajectory(const Eigen::MatrixXd &coefficients)
 {
-    assert(coefficients.rows() == 3);
+    assert(coefficients.rows() == dimension());
     order_ = coefficients.cols() - 1;
     coefficients_ = coefficients;
 }
 
 const Eigen::VectorXd Polynomial3dTrajectory::sample(double t) const
 {
-    Eigen::VectorXd sample = Eigen::VectorXd::Zero(3);
+    Eigen::VectorXd sample = Eigen::VectorXd::Zero(dimension());
     double t_powers = 1;
     for (int i = 0; i < order_ + 1; i++)
     {
@@ -21,18 +22,39 @@ const Eigen::VectorXd Polynomial3dTrajectory::sample(double t) const
 
 const Eigen::MatrixXd Polynomial3dTrajectory::sample(double t, int derivative_order) const
 {
-    Eigen::MatrixXd sample = Eigen::MatrixXd::Zero(3, derivative_order + 1);
-    for (int i = 0; i < order_ + 1; i++)
+    Eigen::MatrixXd sample = Eigen::MatrixXd::Zero(dimension(), derivative_order + 1);
+    //! @todo fix this wrong implementation
+    std::vector<double> lazy_factorials = {1, 1, 2, 6, 24, 120, 720};
+    auto factorial = [&lazy_factorials](int n) -> int
     {
-        sample(0, 0) += coefficients_(i, 0) * pow(t, i);
-        sample(1, 0) += coefficients_(i, 1) * pow(t, i);
-        sample(2, 0) += coefficients_(i, 2) * pow(t, i);
-        for (int j = 1; j < derivative_order + 1; j++)
+        if (n < lazy_factorials.size())
         {
-            sample(0, j) += coefficients_(i, 0) * pow(t, i - j);
-            sample(1, j) += coefficients_(i, 1) * pow(t, i - j);
-            sample(2, j) += coefficients_(i, 2) * pow(t, i - j);
+            return lazy_factorials[n];
         }
+        else
+        {
+            lazy_factorials.reserve(n + 1);
+            int result = lazy_factorials.back();
+            for (int i = lazy_factorials.size(); i <= n; i++)
+            {
+                result *= i;
+                lazy_factorials.push_back(result);
+            }
+            return result;
+        }
+    };
+    derivative_order = std::min(derivative_order, order_);
+    for (int j = 0; j < derivative_order + 1; j++)
+    {
+        for (int i = 0; i < order_ + 1; i++)
+        {
+            if (i - j < 0)
+            {
+                continue;
+            }
+            sample.col(j) += coefficients_.col(i) * pow(t, i-j);
+        }
+        sample.col(j) *= factorial(order_) / factorial(order_ - j);
     }
     return sample;
 }
