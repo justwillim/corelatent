@@ -65,11 +65,11 @@ public:
     }
 };
 
-class Polynomial3dTrajectory : public Trajectory<Polynomial3dTrajectory>
+class PolynomialTrajectory : public Trajectory<PolynomialTrajectory>
 {
 // constructor / destructor
 public:
-    Polynomial3dTrajectory(const Eigen::MatrixXd &coefficients = Eigen::MatrixXd::Zero(3, 1));
+    PolynomialTrajectory(const Eigen::MatrixXd &coefficients = Eigen::MatrixXd::Zero(3, 1));
 
 // inherited APIs
 public:
@@ -87,6 +87,7 @@ public:
     int order() const;
 
 private:
+    int dimension_;
     int order_;
     Eigen::MatrixXd coefficients_;
 };

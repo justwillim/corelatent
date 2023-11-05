@@ -1,14 +1,14 @@
-#include "interface/polynomial_3d_trajectory.hpp"
+#include "interface/polynomial_trajectory.hpp"
 #include <vector>
 
-Polynomial3dTrajectory::Polynomial3dTrajectory(const Eigen::MatrixXd &coefficients)
+PolynomialTrajectory::PolynomialTrajectory(const Eigen::MatrixXd &coefficients)
 {
-    assert(coefficients.rows() == dimension());
+    dimension_ = coefficients.rows();
     order_ = coefficients.cols() - 1;
     coefficients_ = coefficients;
 }
 
-const Eigen::VectorXd Polynomial3dTrajectory::sample(double t) const
+const Eigen::VectorXd PolynomialTrajectory::sample(double t) const
 {
     Eigen::VectorXd sample = Eigen::VectorXd::Zero(dimension());
     double t_powers = 1;
@@ -20,7 +20,7 @@ const Eigen::VectorXd Polynomial3dTrajectory::sample(double t) const
     return sample;
 }
 
-const Eigen::MatrixXd Polynomial3dTrajectory::sample(double t, int derivative_order) const
+const Eigen::MatrixXd PolynomialTrajectory::sample(double t, int derivative_order) const
 {
     Eigen::MatrixXd sample = Eigen::MatrixXd::Zero(dimension(), derivative_order + 1);
     //! @todo fix this wrong implementation
@@ -59,7 +59,7 @@ const Eigen::MatrixXd Polynomial3dTrajectory::sample(double t, int derivative_or
     return sample;
 }
 
-double Polynomial3dTrajectory::curvature(double t) const
+double PolynomialTrajectory::curvature(double t) const
 {
     // curvature = |v x a| / |v|^3
     Eigen::MatrixXd sample_data = sample(t, 2);
@@ -74,7 +74,7 @@ double Polynomial3dTrajectory::curvature(double t) const
     return curvature;
 }
 
-double Polynomial3dTrajectory::arc_length(double t0, double t1) const
+double PolynomialTrajectory::arc_length(double t0, double t1) const
 {
     static constexpr double dt = 0.001; // accuracy of numerical integration
     // arc length = integral of |v| dt
@@ -89,12 +89,12 @@ double Polynomial3dTrajectory::arc_length(double t0, double t1) const
     return arc_length;
 }
 
-int Polynomial3dTrajectory::dimension() const
+int PolynomialTrajectory::dimension() const
 {
     return 3;
 }
 
-int Polynomial3dTrajectory::order() const
+int PolynomialTrajectory::order() const
 {
     return order_;
 }

@@ -22,7 +22,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}_msgs
  )
 
 # library
-add_library(${PROJECT_NAME} STATIC src/polynomial_3d_trajectory.cpp)
+add_library(${PROJECT_NAME} STATIC src/polynomial_trajectory.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC
   ${EIGEN3_INCLUDE_DIR}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
@@ -67,7 +67,7 @@ install(TARGETS
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
-  ament_add_gtest(polynomial_3d_trajectory_test test/polynomial_3d_trajectory_test.cpp)
+  ament_add_gtest(polynomial_3d_trajectory_test test/polynomial_trajectory_test.cpp)
   target_link_libraries(polynomial_3d_trajectory_test ${PROJECT_NAME})
   target_include_directories(polynomial_3d_trajectory_test PUBLIC
     ${EIGEN3_INCLUDE_DIR}

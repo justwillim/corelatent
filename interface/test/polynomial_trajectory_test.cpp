@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
-#include "interface/polynomial_3d_trajectory.hpp"
+#include "interface/polynomial_trajectory.hpp"
 
 TEST(polynomial_3d_trajectory, sampling)
 {
     // sample 100000 point for a 3rd order polynomial randomly generated
     Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 4);
-    Polynomial3dTrajectory poly3d(coeff);
+    PolynomialTrajectory poly3d(coeff);
 
     EXPECT_EQ(poly3d.dimension(), 3);
     EXPECT_EQ(poly3d.order(), 3);

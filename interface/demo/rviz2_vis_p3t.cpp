@@ -1,7 +1,7 @@
 // use ros path to visualize the polynomial 3d trajectory
 #include <rclcpp/rclcpp.hpp>
 #include <nav_msgs/msg/path.hpp>
-#include "interface/polynomial_3d_trajectory.hpp"
+#include "interface/polynomial_trajectory.hpp"
 
 using namespace std::chrono_literals;
 
@@ -13,7 +13,7 @@ public:
     {
         // initialize the trajectory
         Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 7);
-        poly3d_ = Polynomial3dTrajectory(coeff);
+        poly3d_ = PolynomialTrajectory(coeff);
 
         // initialize the path publisher
         //! @todo vis curvature / velocity / acceleration / jerk etc.
@@ -28,7 +28,7 @@ private:
     {
         // random a new trajectory
         Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 7);
-        poly3d_ = Polynomial3dTrajectory(coeff);
+        poly3d_ = PolynomialTrajectory(coeff);
         // sample the trajectory
         nav_msgs::msg::Path path;
         path.header.frame_id = "map";
@@ -47,7 +47,7 @@ private:
 
 private:
     // data structure
-    Polynomial3dTrajectory poly3d_;
+    PolynomialTrajectory poly3d_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
 };
