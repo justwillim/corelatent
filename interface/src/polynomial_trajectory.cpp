@@ -27,7 +27,7 @@ const Eigen::MatrixXd PolynomialTrajectory::sample(double t, int derivative_orde
     std::vector<double> lazy_factorials = {1, 1, 2, 6, 24, 120, 720};
     auto factorial = [&lazy_factorials](int n) -> int
     {
-        if (n < lazy_factorials.size())
+        if (n < (int)lazy_factorials.size())
         {
             return lazy_factorials[n];
         }

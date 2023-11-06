@@ -22,7 +22,10 @@ rosidl_generate_interfaces(${PROJECT_NAME}_msgs
  )
 
 # library
-add_library(${PROJECT_NAME} STATIC src/polynomial_trajectory.cpp)
+add_library(${PROJECT_NAME} STATIC 
+  src/polynomial_trajectory.cpp
+  src/piecewise_trajectory.cpp
+  )
 target_include_directories(${PROJECT_NAME} PUBLIC
   ${EIGEN3_INCLUDE_DIR}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
