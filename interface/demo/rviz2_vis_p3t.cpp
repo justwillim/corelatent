@@ -2,6 +2,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <nav_msgs/msg/path.hpp>
 #include "interface/polynomial_trajectory.hpp"
+#include "interface/piecewise_trajectory.hpp"
 
 using namespace std::chrono_literals;
 
@@ -11,10 +12,7 @@ public:
     Polynomial3dTrajectoryNode()
         : Node("polynomial_3d_trajectory_node")
     {
-        // initialize the trajectory
-        Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 7);
-        poly3d_ = PolynomialTrajectory(coeff);
-
+        generate();
         // initialize the path publisher
         //! @todo vis curvature / velocity / acceleration / jerk etc.
         path_publisher_ = this->create_publisher<nav_msgs::msg::Path>("polynomial_3d_trajectory", 10);
@@ -24,17 +22,29 @@ public:
     }
 
 private:
+    void generate(){
+        // initialize the piecewise trajectory
+        //! @todo make it smooth
+        piecewise_ = PiecewiseTrajectory();
+        for(int i = 0; i < 3; i++)
+        {
+            Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 7);
+            auto poly3d = std::make_unique<PolynomialTrajectory>(coeff);
+            piecewise_.insert_piece(i, std::move(poly3d), 1.0);
+        }
+    }
+
+private:
     void timer_callback()
     {
         // random a new trajectory
-        Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 7);
-        poly3d_ = PolynomialTrajectory(coeff);
+        generate();
         // sample the trajectory
         nav_msgs::msg::Path path;
         path.header.frame_id = "map";
-        for (double t = 0; t < 1; t += 0.01)
+        for (double t = 0; t < 3; t += 0.01)
         {
-            Eigen::VectorXd sample = poly3d_.sample(t);
+            Eigen::VectorXd sample = piecewise_.sample(t);
             geometry_msgs::msg::PoseStamped pose;
             pose.header.frame_id = "map";
             pose.pose.position.x = sample(0);
@@ -47,7 +57,7 @@ private:
 
 private:
     // data structure
-    PolynomialTrajectory poly3d_;
+    PiecewiseTrajectory piecewise_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
 };

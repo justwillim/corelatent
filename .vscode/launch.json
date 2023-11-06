@@ -4,7 +4,7 @@
             "name": "C/C++: gcc build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "program": "/home/wu/git/corelatent/build/interface/path_sampling_vis",
             "args": [],
             "includePath": [
                 "/opt/ros/humble/include/**",

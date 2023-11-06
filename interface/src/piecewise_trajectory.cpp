@@ -102,7 +102,7 @@ int PiecewiseTrajectory::dimension() const
 
 void PiecewiseTrajectory::insert_piece(int index, Piece &&new_piece, double new_time_allocation)
 {
-    if (trajectories_.empty() || new_piece->get_dimension() != dimension())
+    if (not trajectories_.empty() && new_piece->get_dimension() != dimension())
     {
         throw std::invalid_argument("The dimension of the new piece is not consistent with the dimension of the trajectory.");
     }
@@ -119,7 +119,7 @@ void PiecewiseTrajectory::insert_piece(int index, Piece &&new_piece, double new_
 
 PiecewiseTrajectory::Piece PiecewiseTrajectory::swap_piece(int index, Piece &&new_piece, double new_time_allocation)
 {
-    if (trajectories_.empty() || new_piece->get_dimension() != dimension())
+    if (not trajectories_.empty() && new_piece->get_dimension() != dimension())
     {
         throw std::invalid_argument("The dimension of the new piece is not consistent with the dimension of the trajectory.");
     }
