@@ -222,7 +222,7 @@ const std::vector<double> PiecewiseTrajectory::nonsmoothable_points(int derivati
     for (int i = 0; i < (int)trajectories_.size() - 1; i++)
     {
         double t = time_allocation_cumsum_[i];
-        if (trajectories_[i]->get_sample(t, derivative_order).norm() != trajectories_[i + 1]->get_sample(t, derivative_order).norm())
+        if (trajectories_[i]->get_sample(t, derivative_order).normalized() != trajectories_[i + 1]->get_sample(t, derivative_order).normalized())
         {
             np.push_back(t);
         }
