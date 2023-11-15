@@ -5,6 +5,10 @@
 class TrajectoryBase
 {
 public:
+    virtual ~TrajectoryBase() = 0;
+
+public:
+    virtual double get_duration() const = 0;
     virtual const Eigen::VectorXd get_sample(double t) const = 0;
     virtual const Eigen::MatrixXd get_sample(double t, int derivative_order) const = 0;
     virtual int get_dimension() const = 0;
@@ -39,6 +43,10 @@ public:
     {
         return static_cast<const Derived *>(this)->curvature(t);
     }
+    double duration() const
+    {
+        return static_cast<const Derived *>(this)->duration();
+    }
 
 public:
     const Eigen::VectorXd get_sample(double t) const override
@@ -60,5 +68,9 @@ public:
     double get_curvature(double t) const override
     {
         return curvature(t);
+    }
+    double get_duration() const override
+    {
+        return static_cast<const Derived *>(this)->get_duration();
     }
 };

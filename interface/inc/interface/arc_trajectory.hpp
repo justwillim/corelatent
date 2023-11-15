@@ -24,6 +24,7 @@ public:
 
     double arc_length(double t0, double t1) const;
     int dimension() const;
+    double duration() const;
 
 private:
     Piece trajectory_;

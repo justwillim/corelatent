@@ -252,3 +252,12 @@ bool PiecewiseTrajectory::validate_dimension() const
     }
     return true;
 }
+
+double PiecewiseTrajectory::duration() const
+{
+    if (trajectories_.empty())
+    {
+        return 0.0;
+    }
+    return time_allocation_cumsum_.back();
+}
