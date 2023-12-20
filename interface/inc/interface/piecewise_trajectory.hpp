@@ -15,6 +15,9 @@ public:
     PiecewiseTrajectory();
     // Vector of Piece is not copyable, so we use rvalue reference here.
     PiecewiseTrajectory(std::vector<Piece> &&trajectories, std::vector<double> &&time_allocation);
+    virtual ~PiecewiseTrajectory() override = default;
+    // Copy constructor is not allowed
+    PiecewiseTrajectory(const PiecewiseTrajectory& other) = delete;
 
     // inherited APIs
 public:

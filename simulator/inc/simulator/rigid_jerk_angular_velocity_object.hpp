@@ -1,6 +1,8 @@
 #pragma once
 #include "simulator/rigid_object.hpp"
 
+//! @todo separate this class into a separate file.
+//! @todo move utility functions to a separate file.
 class RigidJerkAngularVelocityObject : public RigidObject
 {
     using State = RigidObject::State;

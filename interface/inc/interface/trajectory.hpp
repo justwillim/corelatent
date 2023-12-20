@@ -5,7 +5,7 @@
 class TrajectoryBase
 {
 public:
-    virtual ~TrajectoryBase() = 0;
+    virtual ~TrajectoryBase() = default;
 
 public:
     virtual double get_duration() const = 0;
@@ -22,6 +22,8 @@ public:
 template <typename Derived>
 class Trajectory : public TrajectoryBase
 {
+public:
+    virtual ~Trajectory() override = default;
 public:
     const Eigen::VectorXd sample(double t) const
     {

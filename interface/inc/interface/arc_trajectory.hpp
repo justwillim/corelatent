@@ -15,6 +15,9 @@ public:
     // constructor / destructor
 public:
     ArcTrajectory(Piece picec = nullptr, double t0 = 0, double epsilon = 0.01);
+    virtual ~ArcTrajectory() override = default;
+    // Copy constructor is not allowed
+    ArcTrajectory(const ArcTrajectory &other) = delete;
 
 public:
     const Eigen::VectorXd sample(double t) const;

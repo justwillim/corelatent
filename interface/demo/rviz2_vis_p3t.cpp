@@ -25,12 +25,12 @@ private:
     void generate(){
         // initialize the piecewise trajectory
         //! @todo make it smooth
-        piecewise_ = PiecewiseTrajectory();
+        piecewise_ = std::make_unique<PiecewiseTrajectory>();
         for(int i = 0; i < 3; i++)
         {
             Eigen::MatrixXd coeff = Eigen::MatrixXd::Random(3, 7);
             auto poly3d = std::make_unique<PolynomialTrajectory>(coeff);
-            piecewise_.insert_piece(i, std::move(poly3d), 1.0);
+            piecewise_->insert_piece(i, std::move(poly3d), 1.0);
         }
     }
 
@@ -44,7 +44,7 @@ private:
         path.header.frame_id = "map";
         for (double t = 0; t < 3; t += 0.01)
         {
-            Eigen::VectorXd sample = piecewise_.sample(t);
+            Eigen::VectorXd sample = piecewise_->sample(t);
             geometry_msgs::msg::PoseStamped pose;
             pose.header.frame_id = "map";
             pose.pose.position.x = sample(0);
@@ -57,7 +57,7 @@ private:
 
 private:
     // data structure
-    PiecewiseTrajectory piecewise_;
+    std::unique_ptr<PiecewiseTrajectory> piecewise_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
 };

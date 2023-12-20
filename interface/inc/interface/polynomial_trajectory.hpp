@@ -6,7 +6,7 @@ class PolynomialTrajectory : public Trajectory<PolynomialTrajectory>
     // constructor / destructor
 public:
     PolynomialTrajectory(const Eigen::MatrixXd &coefficients = Eigen::MatrixXd::Zero(3, 1), double duration = 1.0, double t0 = 0.0);
-
+    virtual ~PolynomialTrajectory() override = default;
     // inherited APIs
 public:
     const Eigen::VectorXd sample(double t) const;
